@@ -12,58 +12,60 @@
   "categories": ["education", "productivity"],
   "icons": [
     {
-      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHZpZXdCb3g9IjAgMCA3MiA3MiIgZmlsbD0iIzY2N2VlYSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIGZpbGw9IiM2NjdlZWEiLz48dGV4dCB4PSIzNiIgeT0iMjgiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+TujwvdGV4dD48dGV4dCB4PSIzNiIgeT0iNTIiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmVraXI8L3RleHQ+PC9zdmc+",
+      "src": "https://via.placeholder.com/72x72/667eea/ffffff?text=📚",
       "sizes": "72x72",
-      "type": "image/svg+xml"
+      "type": "image/png"
     },
     {
-      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0iIzY2N2VlYSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIGZpbGw9IiM2NjdlZWEiLz48dGV4dCB4PSI0OCIgeT0iMzYiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+TujwvdGV4dD48dGV4dCB4PSI0OCIgeT0iNjgiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmVraXI8L3RleHQ+PC9zdmc+",
+      "src": "https://via.placeholder.com/96x96/667eea/ffffff?text=📚",
       "sizes": "96x96",
-      "type": "image/svg+xml"
+      "type": "image/png"
     },
     {
-      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9IiM2NjdlZWEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxMjgiIGZpbGw9IiM2NjdlZWEiLz48dGV4dCB4PSI2NCIgeT0iNDgiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjMyIiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+TujwvdGV4dD48dGV4dCB4PSI2NCIgeT0iODgiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjE2IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmVraXI8L3RleHQ+PC9zdmc+",
+      "src": "https://via.placeholder.com/128x128/667eea/ffffff?text=📚",
       "sizes": "128x128",
-      "type": "image/svg+xml"
+      "type": "image/png"
     },
     {
-      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQ0IiBoZWlnaHQ9IjE0NCIgdmlld0JveD0iMCAwIDE0NCAxNDQiIGZpbGw9IiM2NjdlZWEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjE0NCIgaGVpZ2h0PSIxNDQiIGZpbGw9IiM2NjdlZWEiLz48dGV4dCB4PSI3MiIgeT0iNTQiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjM2IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+TujwvdGV4dD48dGV4dCB4PSI3MiIgeT0iOTgiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmVraXI8L3RleHQ+PC9zdmc+",
+      "src": "https://via.placeholder.com/144x144/667eea/ffffff?text=📚",
       "sizes": "144x144",
-      "type": "image/svg+xml"
+      "type": "image/png"
     },
     {
-      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9IiM2NjdlZWEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIGZpbGw9IiM2NjdlZWEiLz48dGV4dCB4PSI5NiIgeT0iNzIiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjQ4IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+TujwvdGV4dD48dGV4dCB4PSI5NiIgeT0iMTMyIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIyNCIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkJla2lyPC90ZXh0Pjx0ZXh0IHg9Ijk2IiB5PSIxNTYiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjE2IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SG9jYTwvdGV4dD48L3N2Zz4=",
+      "src": "https://via.placeholder.com/152x152/667eea/ffffff?text=📚",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/192x192/667eea/ffffff?text=📚",
       "sizes": "192x192",
-      "type": "image/svg+xml"
+      "type": "image/png"
     },
     {
-      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9IiM2NjdlZWEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9IiM2NjdlZWEiLz48dGV4dCB4PSIyNTYiIHk9IjE5MiIgZmlsbD0id2hpdGUiIGZvbnQtc2l6ZT0iMTI4IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+TujwvdGV4dD48dGV4dCB4PSIyNTYiIHk9IjMwNCIgZmlsbD0id2hpdGUiIGZvbnQtc2l6ZT0iNjQiIGZvbnQtd2VpZ2h0PSJib2xkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5CZWtpcjwvdGV4dD48dGV4dCB4PSIyNTYiIHk9IjM4NCIgZmlsbD0id2hpdGUiIGZvbnQtc2l6ZT0iNDgiIGZvbnQtd2VpZ2h0PSJib2xkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Ib2NhPC90ZXh0Pjwvc3ZnPg==",
+      "src": "https://via.placeholder.com/384x384/667eea/ffffff?text=📚",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512/667eea/ffffff?text=📚",
       "sizes": "512x512",
-      "type": "image/svg+xml"
+      "type": "image/png"
     }
   ],
   "screenshots": [
     {
-      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjU2OCIgdmlld0JveD0iMCAwIDMyMCA1NjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMyMCIgaGVpZ2h0PSI1NjgiIGZpbGw9InVybCgjZ3JhZGllbnQwXzFfMSkiLz48cmVjdCB4PSIyMCIgeT0iMTAwIiB3aWR0aD0iMjgwIiBoZWlnaHQ9IjM2OCIgcng9IjIwIiBmaWxsPSJ3aGl0ZSIvPjx0ZXh0IHg9IjE2MCIgeT0iMTgwIiBmaWxsPSIjMzMzIiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmVraXIgSG9jYTwvdGV4dD48dGV4dCB4PSIxNjAiIHk9IjIxMCIgZmlsbD0iIzY2NiIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+w5bEn3JlbmNpIFBvcnRhbMSxPC90ZXh0PjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQwXzFfMSIgeDE9IjAiIHkxPSIwIiB4Mj0iMzIwIiB5Mj0iNTY4IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agc3RvcC1jb2xvcj0iIzY2N2VlYSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzc2NGJhMiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjwvc3ZnPg==",
+      "src": "https://via.placeholder.com/320x568/667eea/ffffff?text=Bekir+Hoca+Mobile",
       "sizes": "320x568",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "form_factor": "narrow"
     },
     {
-      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAyNCIgaGVpZ2h0PSI3NjgiIHZpZXdCb3g9IjAgMCAxMDI0IDc2OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAyNCIgaGVpZ2h0PSI3NjgiIGZpbGw9InVybCgjZ3JhZGllbnQwXzFfMSkiLz48cmVjdCB4PSI1MCIgeT0iMTAwIiB3aWR0aD0iOTI0IiBoZWlnaHQ9IjU2OCIgcng9IjIwIiBmaWxsPSJ3aGl0ZSIvPjx0ZXh0IHg9IjUxMiIgeT0iMjAwIiBmaWxsPSIjMzMzIiBmb250LXNpemU9IjM2IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmVraXIgSG9jYSAtIMOWxJ9yZW5jaSBQb3J0YWzEsTA8L3RleHQ+PHRleHQgeD0iNTEyIiB5PSIyNDAiIGZpbGw9IiM2NjYiIGZvbnQtc2l6ZT0iMTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkVmZW5jZWxpIMO2xJ9yZW5tZSBkZW5leWltaTwvdGV4dD48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImdyYWRpZW50MF8xXzEiIHgxPSIwIiB5MT0iMCIgeDI9IjEwMjQiIHkyPSI3NjgiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBzdG9wLWNvbG9yPSIjNjY3ZWVhIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNzY0YmEyIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PC9zdmc+",
+      "src": "https://via.placeholder.com/1024x768/667eea/ffffff?text=Bekir+Hoca+Desktop",
       "sizes": "1024x768",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "form_factor": "wide"
     }
   ],
-  "features": [
-    "Cross Platform",
-    "fast",
-    "simple"
-  ],
-  "edge_side_panel": {
-    "preferred_width": 400
-  },
   "shortcuts": [
     {
       "name": "Dersler",
@@ -72,32 +74,22 @@
       "url": "/?section=lessons",
       "icons": [
         {
-          "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0iIzY2N2VlYSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIGZpbGw9IiM2NjdlZWEiLz48dGV4dCB4PSI0OCIgeT0iNTYiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjMyIiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+TljwvdGV4dD48L3N2Zz4=",
-          "sizes": "96x96"
+          "src": "https://via.placeholder.com/96x96/667eea/ffffff?text=📖",
+          "sizes": "96x96",
+          "type": "image/png"
         }
       ]
     },
     {
       "name": "Ödevler",
-      "short_name": "Ödevler",
+      "short_name": "Ödevler", 
       "description": "Ödevlerime hızlı erişim",
       "url": "/?section=homework",
       "icons": [
         {
-          "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0iIzY2N2VlYSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIGZpbGw9IiM2NjdlZWEiLz48dGV4dCB4PSI0OCIgeT0iNTYiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjMyIiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+TnTwvdGV4dD48L3N2Zz4=",
-          "sizes": "96x96"
-        }
-      ]
-    },
-    {
-      "name": "Çarpım Tablosu",
-      "short_name": "Çarpım",
-      "description": "Çarpım tablosu oyunu",
-      "url": "/?section=multiplication",
-      "icons": [
-        {
-          "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0iIzY2N2VlYSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIGZpbGw9IiM2NjdlZWEiLz48dGV4dCB4PSI0OCIgeT0iNTYiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjMyIiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+UpjwvdGV4dD48L3N2Zz4=",
-          "sizes": "96x96"
+          "src": "https://via.placeholder.com/96x96/667eea/ffffff?text=📝",
+          "sizes": "96x96",
+          "type": "image/png"
         }
       ]
     }
