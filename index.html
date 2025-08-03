@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bekir Hoca - Öğrenci Portalı</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Bekir Hoca">
+    <meta name="description" content="Bekir Hoca ile eğlenceli öğrenme deneyimi">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9IiM2NjdlZWEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxMjgiIGZpbGw9IiM2NjdlZWEiLz48dGV4dCB4PSI2NCIgeT0iNDgiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjMyIiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+TujwvdGV4dD48L3N2Zz4=">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .multiplication-cell { transition: all 0.3s ease; }
+        .multiplication-cell:hover { transform: scale(1.1); }
+        .pulse-animation { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* PWA Install Button */
+        .install-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        /* Offline Indicator */
+        .offline-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #f59e0b;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            z-index: 1001;
+            display: none;
+        }
+        
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .nav-btn {
+                font-size: 0.875rem;
+                padding: 0.75rem 1rem;
+            }
+            
+            .card-hover {
+                transform: none;
+            }
+            
+            .card-hover:hover {
+                transform: none;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Offline Indicator -->
+    <div id="offlineIndicator" class="offline-indicator">
+        📡 İnternet bağlantısı yok - Çevrimdışı modda çalışıyorsunuz
+    </div>
+
+    <!-- PWA Install Button -->
+    <button id="installButton" class="install-button bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700 transition duration-300">
+        📱 Uygulamayı Yükle
+    </button>
+
+    <!-- Ana Container -->
+    <div id="app" class="min-h-screen">
+        
+        <!-- Giriş Ekranı -->
+        <div id="loginScreen" class="gradient-bg min-h-screen flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+                <div class="text-center mb-8">
+                    <div class="relative mb-4">
+                        <div id="coverPhotoContainer" class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden cursor-pointer hover:bg-blue-200 transition duration-300" onclick="selectCoverPhoto()">
+                            <img id="coverPhoto" class="w-full h-full object-cover rounded-full hidden" alt="Kapak Fotoğrafı">
+                            <span id="defaultIcon" class="text-3xl">📚</span>
+                        </div>
+                        <input type="file" id="coverPhotoInput" class="hidden" accept="image/*" onchange="uploadCoverPhoto(event)">
+                        <button onclick="selectCoverPhoto()" class="text-xs text-blue-600 hover:text-blue-800 underline">
+                            📷 Kapak Fotoğrafı Yükle
+                        </button>
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">Bekir Hoca</h1>
+                    <p class="text-gray-600">Öğrenmenin keyifli yolu</p>
+                </div>
+                
+                <div id="loginForm">
+                    <h2 class="text-2xl font-semibold text-center mb-6 text-gray-800">Giriş Yap</h2>
+                    <div class="space-y-4">
+                        <input type="text" id="loginUsername" placeholder="Kullanıcı Adı" value=""
+                               class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                               onkeypress="if(event.key==='Enter') login()">
+                        <input type="password" id="loginPassword" placeholder="Şifre" value=""
+                               class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                               onkeypress="if(event.key==='Enter') login()">
+                        <button onclick="login()" class="w-full bg-blue-600 text-white p-4 rounded-xl font-semibold hover:bg-blue-700 transition duration-300">
+                            Giriş Yap
+                        </button>
+                    </div>
+                    <p class="text-center mt-6 text-gray-600">
+                        Hesabın yok mu? 
+                        <button onclick="showRegister()" class="text-blue-600 font-semibold hover:underline">Kayıt Ol</button>
+                    </p>
+                    
+
+                </div>
+                
+                <div id="registerForm" class="hidden">
+                    <h2 class="text-2xl font-semibold text-center mb-6 text-gray-800">Kayıt Ol</h2>
+                    <div class="space-y-4">
+                        <input type="text" id="regName" placeholder="Ad Soyad" 
+                               class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+                        <input type="text" id="regSchool" placeholder="Okul Adı" 
+                               class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+                        <div class="grid grid-cols-2 gap-4">
+                            <select id="regGrade" class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+                                <option value="">Sınıf Seçin</option>
+                                <option value="1">1. Sınıf</option>
+                                <option value="2">2. Sınıf</option>
+                                <option value="3">3. Sınıf</option>
+                                <option value="4">4. Sınıf</option>
+                            </select>
+                            <select id="regBranch" class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+                                <option value="">Şube Seçin</option>
+                                <option value="A">A Şubesi</option>
+                                <option value="B">B Şubesi</option>
+                                <option value="C">C Şubesi</option>
+                                <option value="D">D Şubesi</option>
+                                <option value="E">E Şubesi</option>
+                            </select>
+                        </div>
+                        <input type="text" id="regUsername" placeholder="Kullanıcı Adı (Kendiniz belirleyin)" 
+                               class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+                        <input type="password" id="regPassword" placeholder="Şifre (Kendiniz belirleyin)" 
+                               class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+                        <input type="password" id="regPasswordConfirm" placeholder="Şifre Tekrar" 
+                               class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+                        <button onclick="register()" class="w-full bg-green-600 text-white p-4 rounded-xl font-semibold hover:bg-green-700 transition duration-300">
+                            Kayıt Ol
+                        </button>
+                    </div>
+                    <p class="text-center mt-6 text-gray-600">
+                        Zaten hesabın var mı? 
+                        <button onclick="showLogin()" class="text-blue-600 font-semibold hover:underline">Giriş Yap</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ana Uygulama -->
+        <div id="mainApp" class="hidden">
+            <!-- Header -->
+            <header class="gradient-bg text-white p-4 shadow-lg">
+                <div class="flex justify-between items-center max-w-6xl mx-auto">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl">📚</span>
+                        <h1 class="text-xl font-bold">Bekir Hoca</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span id="userWelcome" class="text-sm hidden md:block"></span>
+                        <button onclick="logout()" class="bg-white bg-opacity-20 px-4 py-2 rounded-lg hover:bg-opacity-30 transition duration-300">
+                            Çıkış
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Navigation -->
+            <nav class="bg-white shadow-md p-4">
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex space-x-1 overflow-x-auto">
+                        <button onclick="showSection('dashboard')" class="nav-btn bg-blue-100 text-blue-700 px-6 py-3 rounded-lg font-medium whitespace-nowrap">
+                            🏠 Ana Sayfa
+                        </button>
+                        <button onclick="showSection('lessons')" class="nav-btn hover:bg-gray-100 px-6 py-3 rounded-lg font-medium whitespace-nowrap">
+                            📖 Dersler
+                        </button>
+                        <button onclick="showSection('homework')" class="nav-btn hover:bg-gray-100 px-6 py-3 rounded-lg font-medium whitespace-nowrap">
+                            📝 Ödevler
+                        </button>
+                        <button onclick="showSection('profile')" class="nav-btn hover:bg-gray-100 px-6 py-3 rounded-lg font-medium whitespace-nowrap">
+                            👤 Profil
+                        </button>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Ana İçerik -->
+            <main class="max-w-6xl mx-auto p-4">
+                
+                <!-- Dashboard -->
+                <div id="dashboard" class="section">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2">Hoş Geldin! 🎉</h2>
+                        <p class="text-gray-600">Bugün hangi dersi çalışmak istiyorsun?</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-2xl card-hover">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold">Tamamlanan Dersler</h3>
+                                    <p class="text-3xl font-bold mt-2" id="completedLessons">0</p>
+                                </div>
+                                <span class="text-4xl opacity-80">✅</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-2xl card-hover">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold">Toplam Puan</h3>
+                                    <p class="text-3xl font-bold mt-2" id="totalScore">0</p>
+                                </div>
+                                <span class="text-4xl opacity-80">⭐</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-2xl card-hover">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold">Bekleyen Ödevler</h3>
+                                    <p class="text-3xl font-bold mt-2" id="pendingHomework">0</p>
+                                </div>
+                                <span class="text-4xl opacity-80">📋</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800">Hızlı Erişim</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="quickAccess">
+                            <!-- Dinamik olarak doldurulacak -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dersler -->
+                <div id="lessons" class="section hidden">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">Derslerim</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="lessonsGrid">
+                        <!-- Dinamik olarak doldurulacak -->
+                    </div>
+                </div>
+
+                <!-- Ders Detay -->
+                <div id="lessonDetail" class="section hidden">
+                    <button onclick="showSection('lessons')" class="mb-4 flex items-center text-blue-600 hover:text-blue-800">
+                        ← Derslere Dön
+                    </button>
+                    <div id="lessonContent">
+                        <!-- Dinamik içerik -->
+                    </div>
+                </div>
+
+                <!-- Çarpım Tablosu -->
+                <div id="multiplicationTable" class="section hidden">
+                    <button onclick="openLesson('Matematik')" class="mb-4 flex items-center text-blue-600 hover:text-blue-800">
+                        ← Matematik Dersine Dön
+                    </button>
+                    <div id="multiplicationTableContent">
+                        <!-- Dinamik içerik -->
+                    </div>
+                </div>
+
+                <!-- Ödevler -->
+                <div id="homework" class="section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">Ödevlerim</h2>
+                        <button onclick="showHomeworkUpload()" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition duration-300">
+                            📤 Ödev Yükle
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-2xl shadow-lg p-6">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800">Bekleyen Ödevler</h3>
+                            <div id="pendingHomeworkList" class="space-y-3">
+                                <!-- Dinamik liste -->
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-2xl shadow-lg p-6">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800">Tamamlanan Ödevler</h3>
+                            <div id="completedHomeworkList" class="space-y-3">
+                                <!-- Dinamik liste -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profil -->
+                <div id="profile" class="section hidden">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">Profilim</h2>
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <div class="flex items-center space-x-6 mb-6">
+                            <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                                <span id="profileInitials">ÖG</span>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-semibold text-gray-800" id="profileName">Öğrenci</h3>
+                                <p class="text-gray-600" id="profileGrade">Sınıf</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <h4 class="text-lg font-semibold text-gray-800">İstatistikler</h4>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between">
+                                        <span>Tamamlanan Dersler:</span>
+                                        <span class="font-semibold" id="profileCompletedLessons">0</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Toplam Puan:</span>
+                                        <span class="font-semibold" id="profileTotalScore">0</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Ortalama:</span>
+                                        <span class="font-semibold" id="profileAverage">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <h4 class="text-lg font-semibold text-gray-800">Başarılar</h4>
+                                <div class="grid grid-cols-3 gap-2" id="achievements">
+                                    <!-- Başarı rozetleri -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Ödev Yükleme Modal -->
+        <div id="homeworkModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-50">
+            <div class="bg-white rounded-2xl p-6 w-full max-w-md">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold">Ödev Yükle</h3>
+                    <button onclick="closeHomeworkModal()" class="text-gray-500 hover:text-gray-700">✕</button>
+                </div>
+                
+                <div class="space-y-4">
+                    <select id="homeworkSubject" class="w-full p-3 border border-gray-300 rounded-xl">
+                        <option value="">Ders Seçin</option>
+                    </select>
+                    
+                    <input type="text" id="homeworkTitle" placeholder="Ödev Başlığı" 
+                           class="w-full p-3 border border-gray-300 rounded-xl">
+                    
+                    <textarea id="homeworkDescription" placeholder="Ödev Açıklaması" rows="3"
+                              class="w-full p-3 border border-gray-300 rounded-xl resize-none"></textarea>
+                    
+                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center">
+                        <input type="file" id="homeworkFile" class="hidden" accept=".pdf,.doc,.docx,.jpg,.png">
+                        <button onclick="document.getElementById('homeworkFile').click()" 
+                                class="text-blue-600 hover:text-blue-800">
+                            📎 Dosya Seç
+                        </button>
+                        <p class="text-sm text-gray-500 mt-2">PDF, Word veya resim dosyası</p>
+                        <div id="selectedFile" class="mt-2 text-sm text-green-600"></div>
+                    </div>
+                    
+                    <button onclick="uploadHomework()" 
+                            class="w-full bg-blue-600 text-white p-3 rounded-xl font-semibold hover:bg-blue-700 transition duration-300">
+                        Ödev Yükle
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    const CACHE_NAME = 'bekir-hoca-v1';
+                    const urlsToCache = [
+                        '/',
+                        'https://cdn.tailwindcss.com',
+                        'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap'
+                    ];
+
+                    self.addEventListener('install', event => {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME)
+                                .then(cache => cache.addAll(urlsToCache))
+                        );
+                    });
+
+                    self.addEventListener('fetch', event => {
+                        event.respondWith(
+                            caches.match(event.request)
+                                .then(response => {
+                                    if (response) {
+                                        return response;
+                                    }
+                                    return fetch(event.request);
+                                })
+                        );
+                    });
+                `;
+                
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+                
+                navigator.serviceWorker.register(swUrl)
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        // PWA Install Prompt
+        let deferredPrompt;
+        const installButton = document.getElementById('installButton');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installButton.style.display = 'block';
+        });
+
+        installButton.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+                installButton.style.display = 'none';
+            }
+        });
+
+        // Online/Offline Status
+        const offlineIndicator = document.getElementById('offlineIndicator');
+
+        function updateOnlineStatus() {
+            if (navigator.onLine) {
+                offlineIndicator.style.display = 'none';
+            } else {
+                offlineIndicator.style.display = 'block';
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus();
+
+        // Uygulama durumu
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('users') || '[]');
+        let homeworks = JSON.parse(localStorage.getItem('homeworks') || '[]');
+        let userProgress = JSON.parse(localStorage.getItem('userProgress') || '{}');
+
+        // Kapak fotoğrafı fonksiyonları
+        function selectCoverPhoto() {
+            document.getElementById('coverPhotoInput').click();
+        }
+
+        function uploadCoverPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Dosya boyutu kontrolü (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Dosya boyutu çok büyük! Lütfen 5MB\'dan küçük bir dosya seçin.');
+                return;
+            }
+
+            // Dosya tipi kontrolü
+            if (!file.type.startsWith('image/')) {
+                alert('Lütfen sadece resim dosyası seçin!');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const coverPhoto = document.getElementById('coverPhoto');
+                const defaultIcon = document.getElementById('defaultIcon');
+                
+                if (coverPhoto && defaultIcon) {
+                    coverPhoto.src = e.target.result;
+                    coverPhoto.classList.remove('hidden');
+                    defaultIcon.classList.add('hidden');
+                    
+                    // Fotoğrafı localStorage'a kaydet
+                    localStorage.setItem('coverPhoto', e.target.result);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Sayfa yüklendiğinde kapak fotoğrafını kontrol et
+        function loadCoverPhoto() {
+            const savedPhoto = localStorage.getItem('coverPhoto');
+            if (savedPhoto) {
+                const coverPhoto = document.getElementById('coverPhoto');
+                const defaultIcon = document.getElementById('defaultIcon');
+                
+                if (coverPhoto && defaultIcon) {
+                    coverPhoto.src = savedPhoto;
+                    coverPhoto.classList.remove('hidden');
+                    defaultIcon.classList.add('hidden');
+                }
+            }
+        }
+
+        // Sayfa yüklendiğinde fotoğrafı yükle
+        window.addEventListener('load', loadCoverPhoto);
+
+        // Sınıf bazlı ders yapısı
+        const gradeSubjects = {
+            1: [
+                { name: 'Türkçe', icon: '📝', color: 'from-red-500 to-red-600' },
+                { name: 'Matematik', icon: '🔢', color: 'from-blue-500 to-blue-600' },
+                { name: 'Hayat Bilgisi', icon: '🌱', color: 'from-green-500 to-green-600' }
+            ],
+            2: [
+                { name: 'Türkçe', icon: '📝', color: 'from-red-500 to-red-600' },
+                { name: 'Matematik', icon: '🔢', color: 'from-blue-500 to-blue-600' },
+                { name: 'Hayat Bilgisi', icon: '🌱', color: 'from-green-500 to-green-600' },
+                { name: 'İngilizce', icon: '🇬🇧', color: 'from-purple-500 to-purple-600' }
+            ],
+            3: [
+                { name: 'Türkçe', icon: '📝', color: 'from-red-500 to-red-600' },
+                { name: 'Matematik', icon: '🔢', color: 'from-blue-500 to-blue-600' },
+                { name: 'Hayat Bilgisi', icon: '🌱', color: 'from-green-500 to-green-600' },
+                { name: 'Fen Bilimleri', icon: '🔬', color: 'from-teal-500 to-teal-600' },
+                { name: 'İngilizce', icon: '🇬🇧', color: 'from-purple-500 to-purple-600' }
+            ],
+            4: [
+                { name: 'Türkçe', icon: '📝', color: 'from-red-500 to-red-600' },
+                { name: 'Matematik', icon: '🔢', color: 'from-blue-500 to-blue-600' },
+                { name: 'Fen Bilimleri', icon: '🔬', color: 'from-teal-500 to-teal-600' },
+                { name: 'Sosyal Bilgiler', icon: '🌍', color: 'from-orange-500 to-orange-600' },
+                { name: 'İngilizce', icon: '🇬🇧', color: 'from-purple-500 to-purple-600' }
+            ]
+        };
+
+        // Örnek ders içerikleri
+        const lessonContent = {
+            'Türkçe': {
+                activities: [
+                    { name: 'Harf Tanıma', type: 'alıştırma', description: 'Harfleri tanıyalım' },
+                    { name: 'Kelime Oluşturma', type: 'etkinlik', description: 'Harflerden kelimeler yapalım' },
+                    { name: 'Okuma Testi', type: 'test', description: 'Okuma becerinizi test edin' }
+                ]
+            },
+            'Matematik': {
+                activities: [
+                    { name: 'Sayıları Öğrenelim', type: 'alıştırma', description: '1-10 arası sayılar' },
+                    { name: 'Toplama İşlemi', type: 'etkinlik', description: 'Toplama işlemini öğrenelim' },
+                    { name: 'Çıkarma İşlemi', type: 'etkinlik', description: 'Çıkarma işlemini öğrenelim' },
+                    { name: 'Çarpma İşlemi', type: 'etkinlik', description: 'Çarpma işlemini öğrenelim' },
+                    { name: 'Bölme İşlemi', type: 'etkinlik', description: 'Bölme işlemini öğrenelim' },
+                    { name: 'Çarpım Tablosu', type: 'özel', description: 'Çarpım tablosunu eğlenceli yollarla öğrenelim' },
+                    { name: 'Matematik Testi', type: 'test', description: 'Matematik bilginizi test edin' }
+                ]
+            },
+            'Hayat Bilgisi': {
+                activities: [
+                    { name: 'Vücudumuz', type: 'alıştırma', description: 'Vücut organlarını öğrenelim' },
+                    { name: 'Sağlıklı Beslenme', type: 'etkinlik', description: 'Sağlıklı yiyecekleri seçelim' },
+                    { name: 'Hayat Bilgisi Testi', type: 'test', description: 'Bilgilerinizi test edin' }
+                ]
+            },
+            'Fen Bilimleri': {
+                activities: [
+                    { name: 'Canlı-Cansız', type: 'alıştırma', description: 'Canlı ve cansızları ayıralım' },
+                    { name: 'Deney Zamanı', type: 'etkinlik', description: 'Basit deneyler yapalım' },
+                    { name: 'Fen Testi', type: 'test', description: 'Fen bilginizi test edin' }
+                ]
+            },
+            'Sosyal Bilgiler': {
+                activities: [
+                    { name: 'Ülkemiz', type: 'alıştırma', description: 'Türkiye\'yi tanıyalım' },
+                    { name: 'Tarih Yolculuğu', type: 'etkinlik', description: 'Geçmişe yolculuk' },
+                    { name: 'Sosyal Bilgiler Testi', type: 'test', description: 'Bilgilerinizi test edin' }
+                ]
+            },
+            'İngilizce': {
+                activities: [
+                    { name: 'Alphabet', type: 'alıştırma', description: 'İngilizce alfabeyi öğrenelim' },
+                    { name: 'Colors & Numbers', type: 'etkinlik', description: 'Renkler ve sayılar' },
+                    { name: 'English Test', type: 'test', description: 'İngilizce bilginizi test edin' }
+                ]
+            }
+        };
+
+        // Çarpım tablosu verileri
+        let multiplicationTableProgress = JSON.parse(localStorage.getItem('multiplicationTableProgress') || '{}');
+        let currentTableQuiz = { table: 0, question: 0, score: 0, total: 0 };
+
+        // Giriş fonksiyonları
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+
+        function showLogin() {
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        }
+
+        function register() {
+            const name = document.getElementById('regName').value.trim();
+            const school = document.getElementById('regSchool').value.trim();
+            const grade = document.getElementById('regGrade').value;
+            const branch = document.getElementById('regBranch').value;
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const passwordConfirm = document.getElementById('regPasswordConfirm').value.trim();
+
+            // Tüm alanların doldurulup doldurulmadığını kontrol et
+            if (!name || !school || !grade || !branch || !username || !password || !passwordConfirm) {
+                alert('Lütfen tüm alanları doldurun!');
+                return;
+            }
+
+            // Şifre eşleşmesi kontrolü
+            if (password !== passwordConfirm) {
+                alert('Şifreler eşleşmiyor! Lütfen tekrar kontrol edin.');
+                return;
+            }
+
+            // Şifre uzunluğu kontrolü
+            if (password.length < 3) {
+                alert('Şifre en az 3 karakter olmalıdır!');
+                return;
+            }
+
+            // Kullanıcı adı benzersizlik kontrolü
+            if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) {
+                alert('Bu kullanıcı adı zaten kullanılıyor! Lütfen farklı bir kullanıcı adı seçin.');
+                return;
+            }
+
+            // Moderatör kullanıcı adı kontrolü
+            if (username.toLowerCase() === 'moderator' || username.toLowerCase() === 'demo') {
+                alert('Bu kullanıcı adı kullanılamaz! Lütfen farklı bir kullanıcı adı seçin.');
+                return;
+            }
+
+            const newUser = { 
+                name, 
+                school, 
+                username, 
+                grade: parseInt(grade), 
+                branch, 
+                password,
+                registrationDate: new Date().toISOString(),
+                fullInfo: `${name} - ${school} - ${grade}/${branch}`
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            alert(`Kayıt başarılı! 🎉\n\nHoş geldin ${name}!\nOkul: ${school}\nSınıf: ${grade}/${branch}\n\nŞimdi giriş yapabilirsin.`);
+            
+            // Formu temizle
+            document.getElementById('regName').value = '';
+            document.getElementById('regSchool').value = '';
+            document.getElementById('regGrade').value = '';
+            document.getElementById('regBranch').value = '';
+            document.getElementById('regUsername').value = '';
+            document.getElementById('regPassword').value = '';
+            document.getElementById('regPasswordConfirm').value = '';
+            
+            showLogin();
+        }
+
+        function login() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+
+            console.log('Giriş denemesi:', username, password); // Debug için
+
+            if (!username || !password) {
+                alert('Kullanıcı adı ve şifre gerekli!');
+                return;
+            }
+
+            // Moderatör hesap kontrolü
+            if (username.toLowerCase() === 'moderator' && password === 'bekir2024') {
+                currentUser = { name: 'Bekir Hoca (Moderatör)', username: 'moderator', grade: 'Moderatör', password: 'bekir2024', role: 'moderator' };
+                showMainApp();
+                return;
+            }
+
+            // Demo hesap kontrolü - büyük/küçük harf duyarsız
+            if (username.toLowerCase() === 'demo' && password === '123') {
+                currentUser = { name: 'Demo Öğrenci', username: 'demo', grade: 2, password: '123' };
+                showMainApp();
+                return;
+            }
+
+            // Kayıtlı kullanıcı kontrolü
+            const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
+            if (!user) {
+                alert('Kullanıcı adı veya şifre hatalı! Lütfen bilgilerinizi kontrol edin.');
+                return;
+            }
+
+            currentUser = user;
+            showMainApp();
+        }
+
+        function showMainApp() {
+            try {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                initializeApp();
+            } catch (error) {
+                console.error('Ana uygulama gösterilirken hata:', error);
+                alert('Giriş sırasında bir hata oluştu. Sayfayı yenileyin.');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        // Uygulama başlatma
+        function initializeApp() {
+            document.getElementById('userWelcome').textContent = `Merhaba, ${currentUser.name}`;
+            document.getElementById('profileName').textContent = currentUser.name;
+            
+            // Profil bilgilerini güncelle
+            if (currentUser.role === 'moderator') {
+                document.getElementById('profileGrade').textContent = 'Moderatör';
+            } else if (currentUser.school && currentUser.branch) {
+                document.getElementById('profileGrade').textContent = `${currentUser.school} - ${currentUser.grade}/${currentUser.branch}`;
+            } else {
+                document.getElementById('profileGrade').textContent = `${currentUser.grade}. Sınıf`;
+            }
+            
+            document.getElementById('profileInitials').textContent = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+            
+            loadDashboard();
+            loadLessons();
+            loadHomework();
+            updateStats();
+        }
+
+        // Bölüm gösterme
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(section).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-100', 'text-blue-700');
+                btn.classList.add('hover:bg-gray-100');
+            });
+            
+            event.target.classList.add('bg-blue-100', 'text-blue-700');
+            event.target.classList.remove('hover:bg-gray-100');
+        }
+
+        // Dashboard yükleme
+        function loadDashboard() {
+            const subjects = gradeSubjects[currentUser.grade] || gradeSubjects[2];
+            const quickAccess = document.getElementById('quickAccess');
+            
+            quickAccess.innerHTML = subjects.map(subject => `
+                <button onclick="openLesson('${subject.name}')" 
+                        class="bg-gradient-to-r ${subject.color} text-white p-4 rounded-xl text-center card-hover">
+                    <div class="text-2xl mb-2">${subject.icon}</div>
+                    <div class="font-semibold text-sm">${subject.name}</div>
+                </button>
+            `).join('');
+        }
+
+        // Dersleri yükleme
+        function loadLessons() {
+            const subjects = gradeSubjects[currentUser.grade] || gradeSubjects[2];
+            const lessonsGrid = document.getElementById('lessonsGrid');
+            
+            lessonsGrid.innerHTML = subjects.map(subject => `
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+                    <div class="bg-gradient-to-r ${subject.color} p-6 text-white">
+                        <div class="text-4xl mb-2">${subject.icon}</div>
+                        <h3 class="text-xl font-bold">${subject.name}</h3>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 mb-4">Bu derste ${lessonContent[subject.name]?.activities.length || 3} etkinlik var</p>
+                        <button onclick="openLesson('${subject.name}')" 
+                                class="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition duration-300">
+                            Derse Başla
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Ders açma
+        function openLesson(subjectName) {
+            const content = lessonContent[subjectName];
+            if (!content) return;
+
+            document.getElementById('lessonContent').innerHTML = `
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">${subjectName}</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${content.activities.map((activity, index) => `
+                            <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition duration-300">
+                                <div class="text-center mb-4">
+                                    <div class="w-16 h-16 mx-auto mb-3 rounded-full flex items-center justify-center text-2xl
+                                         ${activity.type === 'test' ? 'bg-red-100' : 
+                                           activity.type === 'alıştırma' ? 'bg-blue-100' : 
+                                           activity.type === 'özel' ? 'bg-purple-100' : 'bg-green-100'}">
+                                        ${activity.type === 'test' ? '📝' : 
+                                          activity.type === 'alıştırma' ? '📚' : 
+                                          activity.type === 'özel' ? '🔢' : '🎯'}
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-gray-800">${activity.name}</h3>
+                                    <p class="text-sm text-gray-600 mt-2">${activity.description}</p>
+                                </div>
+                                <button onclick="startActivity('${subjectName}', ${index})" 
+                                        class="w-full py-3 rounded-lg font-semibold transition duration-300
+                                         ${activity.type === 'test' ? 'bg-red-600 hover:bg-red-700 text-white' : 
+                                           activity.type === 'alıştırma' ? 'bg-blue-600 hover:bg-blue-700 text-white' : 
+                                           activity.type === 'özel' ? 'bg-purple-600 hover:bg-purple-700 text-white' :
+                                           'bg-green-600 hover:bg-green-700 text-white'}">
+                                    Başla
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            showSection('lessonDetail');
+        }
+
+        // Etkinlik başlatma
+        function startActivity(subject, activityIndex) {
+            const activity = lessonContent[subject].activities[activityIndex];
+            
+            // Çarpım Tablosu özel etkinliği
+            if (subject === 'Matematik' && activity.name === 'Çarpım Tablosu') {
+                showMultiplicationTable();
+                return;
+            }
+            
+            alert(`${activity.name} etkinliği başlatılıyor! Bu özellik yakında eklenecek.`);
+            
+            // İlerleme kaydetme
+            const userId = currentUser.username;
+            if (!userProgress[userId]) userProgress[userId] = { completed: 0, score: 0 };
+            userProgress[userId].completed++;
+            userProgress[userId].score += Math.floor(Math.random() * 20) + 80;
+            localStorage.setItem('userProgress', JSON.stringify(userProgress));
+            
+            updateStats();
+        }
+
+        // Çarpım Tablosu Ana Sayfası
+        function showMultiplicationTable() {
+            document.getElementById('multiplicationTableContent').innerHTML = `
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <div class="text-center mb-8">
+                        <h2 class="text-4xl font-bold text-gray-800 mb-4">🔢 Çarpım Tablosu</h2>
+                        <p class="text-lg text-gray-600">Çarpım tablosunu eğlenceli yollarla öğrenelim!</p>
+                    </div>
+
+                    <!-- Ana Menü -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl p-6 cursor-pointer card-hover" onclick="showFullMultiplicationTable()">
+                            <div class="text-center">
+                                <div class="text-4xl mb-4">📊</div>
+                                <h3 class="text-xl font-bold mb-2">Tam Tablo</h3>
+                                <p class="text-sm opacity-90">1'den 10'a kadar çarpım tablosunu gör</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-2xl p-6 cursor-pointer card-hover" onclick="showTablePractice()">
+                            <div class="text-center">
+                                <div class="text-4xl mb-4">🎯</div>
+                                <h3 class="text-xl font-bold mb-2">Tablo Seç</h3>
+                                <p class="text-sm opacity-90">İstediğin tabloyu seçip çalış</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-2xl p-6 cursor-pointer card-hover" onclick="showTableQuiz()">
+                            <div class="text-center">
+                                <div class="text-4xl mb-4">🧠</div>
+                                <h3 class="text-xl font-bold mb-2">Hızlı Test</h3>
+                                <p class="text-sm opacity-90">Bilgini test et, puan kazan</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hızlı Erişim Tabloları -->
+                    <div class="bg-gray-50 rounded-2xl p-6">
+                        <h3 class="text-xl font-bold mb-4 text-gray-800 text-center">🚀 Hızlı Erişim</h3>
+                        <div class="grid grid-cols-5 md:grid-cols-10 gap-3">
+                            ${Array.from({length: 10}, (_, i) => {
+                                const tableNum = i + 1;
+                                const progress = getUserTableProgress(tableNum);
+                                const progressColor = progress >= 80 ? 'bg-green-500' : progress >= 50 ? 'bg-yellow-500' : 'bg-gray-400';
+                                
+                                return `
+                                    <button onclick="showSingleTable(${tableNum})" 
+                                            class="relative bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-blue-500 hover:shadow-lg transition-all duration-300 group">
+                                        <div class="text-2xl font-bold text-gray-800 group-hover:text-blue-600">${tableNum}</div>
+                                        <div class="text-xs text-gray-500 mt-1">${tableNum} Tablosu</div>
+                                        <div class="absolute bottom-1 left-1 right-1 h-1 ${progressColor} rounded-full opacity-60"></div>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            showSection('multiplicationTable');
+        }
+
+        // Tam Çarpım Tablosu Gösterimi
+        function showFullMultiplicationTable() {
+            document.getElementById('multiplicationTableContent').innerHTML = `
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">📊 Tam Çarpım Tablosu</h2>
+                        <button onclick="showMultiplicationTable()" class="text-blue-600 hover:text-blue-800">
+                            ← Ana Menüye Dön
+                        </button>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
+                            <p class="text-blue-800">
+                                <strong>💡 İpucu:</strong> Tablodaki herhangi bir hücreye tıklayarak o çarpımı vurgulayabilirsin!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse bg-white rounded-xl overflow-hidden shadow-lg">
+                            <thead>
+                                <tr class="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+                                    <th class="p-4 font-bold text-lg">×</th>
+                                    ${Array.from({length: 10}, (_, i) => `
+                                        <th class="p-4 font-bold text-lg">${i + 1}</th>
+                                    `).join('')}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${Array.from({length: 10}, (_, i) => `
+                                    <tr class="${i % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors duration-200">
+                                        <td class="p-4 font-bold text-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white">${i + 1}</td>
+                                        ${Array.from({length: 10}, (_, j) => `
+                                            <td class="p-4 text-center font-semibold text-lg multiplication-cell cursor-pointer hover:bg-yellow-200 hover:scale-110 transition-all duration-300" 
+                                                onclick="highlightMultiplication(${i + 1}, ${j + 1})"
+                                                id="cell-${i + 1}-${j + 1}">
+                                                ${(i + 1) * (j + 1)}
+                                            </td>
+                                        `).join('')}
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Tek Tablo Gösterimi
+        function showSingleTable(tableNum) {
+            const tableData = Array.from({length: 10}, (_, i) => ({
+                multiplier: i + 1,
+                result: tableNum * (i + 1)
+            }));
+
+            document.getElementById('multiplicationTableContent').innerHTML = `
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">${tableNum} Tablosu</h2>
+                        <button onclick="showMultiplicationTable()" class="text-blue-600 hover:text-blue-800">
+                            ← Ana Menüye Dön
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Sol Taraf - Tablo -->
+                        <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6">
+                            <h3 class="text-2xl font-bold mb-6 text-center text-blue-800">${tableNum} Çarpım Tablosu</h3>
+                            <div class="space-y-3">
+                                ${tableData.map((item, index) => `
+                                    <div class="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer"
+                                         onclick="speakMultiplication(${tableNum}, ${item.multiplier}, ${item.result})">
+                                        <div class="flex items-center justify-between">
+                                            <div class="text-xl font-bold text-gray-800">
+                                                ${tableNum} × ${item.multiplier}
+                                            </div>
+                                            <div class="text-2xl font-bold text-blue-600">
+                                                ${item.result}
+                                            </div>
+                                        </div>
+                                        <div class="text-sm text-gray-500 mt-1">
+                                            ${tableNum} çarpı ${item.multiplier} eşittir ${item.result}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Sağ Taraf - Etkinlikler -->
+                        <div class="space-y-6">
+                            <!-- Görsel Gösterim -->
+                            <div class="bg-gradient-to-br from-green-50 to-teal-50 rounded-2xl p-6">
+                                <h3 class="text-xl font-bold mb-4 text-green-800">🎯 Görsel Öğrenme</h3>
+                                <div class="bg-white rounded-xl p-4">
+                                    <div class="text-center mb-4">
+                                        <div class="text-lg font-semibold">Örnek: ${tableNum} × 3</div>
+                                        <div class="mt-4">
+                                            ${Array.from({length: 3}, () => 
+                                                `<div class="inline-block mx-1 mb-2">
+                                                    ${'🔵'.repeat(tableNum)}
+                                                </div>`
+                                            ).join('')}
+                                        </div>
+                                        <div class="text-xl font-bold text-green-600 mt-4">
+                                            = ${tableNum * 3}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Hızlı Test -->
+                            <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-6">
+                                <h3 class="text-xl font-bold mb-4 text-orange-800">⚡ Hızlı Test</h3>
+                                <div class="bg-white rounded-xl p-4">
+                                    <div class="text-center mb-4">
+                                        <div class="text-2xl font-bold mb-2" id="quickQuestion">
+                                            ${tableNum} × ? = ?
+                                        </div>
+                                        <div class="grid grid-cols-5 gap-2" id="quickAnswers">
+                                            <!-- Dinamik cevaplar -->
+                                        </div>
+                                    </div>
+                                    <button onclick="generateQuickQuestion(${tableNum})" 
+                                            class="w-full bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600">
+                                        🔄 Yeni Soru
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- İlerleme -->
+                            <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6">
+                                <h3 class="text-xl font-bold mb-4 text-purple-800">📊 İlerleme</h3>
+                                <div class="bg-white rounded-xl p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm font-medium">${tableNum} Tablosu</span>
+                                        <span class="text-sm font-bold">${getUserTableProgress(tableNum)}%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-purple-500 h-3 rounded-full transition-all duration-500" 
+                                             style="width: ${getUserTableProgress(tableNum)}%"></div>
+                                    </div>
+                                </div>
+                                <button onclick="startTableDrill(${tableNum})" 
+                                        class="w-full mt-4 bg-purple-500 text-white py-2 rounded-lg hover:bg-purple-600">
+                                    🎯 Antrenman Başlat
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            generateQuickQuestion(tableNum);
+        }
+
+        // Hızlı Test Oyunu
+        function showTableQuiz() {
+            document.getElementById('multiplicationTableContent').innerHTML = `
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">🧠 Hızlı Test</h2>
+                        <button onclick="showMultiplicationTable()" class="text-blue-600 hover:text-blue-800">
+                            ← Ana Menüye Dön
+                        </button>
+                    </div>
+
+                    <div class="text-center mb-8">
+                        <div class="bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl p-8 mb-6">
+                            <div class="text-4xl mb-4">⚡</div>
+                            <h3 class="text-2xl font-bold mb-2">Hızlı Çarpım Testi</h3>
+                            <p class="text-lg opacity-90">Karışık sorularla bilgini test et!</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-blue-50 rounded-2xl p-6">
+                            <h3 class="text-xl font-bold mb-4 text-blue-800">🎯 Test Seçenekleri</h3>
+                            <div class="space-y-3">
+                                <button onclick="startQuickQuiz('easy')" 
+                                        class="w-full bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl font-semibold transition duration-300">
+                                    😊 Kolay (1-5 Tabloları)
+                                </button>
+                                <button onclick="startQuickQuiz('medium')" 
+                                        class="w-full bg-yellow-500 hover:bg-yellow-600 text-white p-4 rounded-xl font-semibold transition duration-300">
+                                    😐 Orta (1-7 Tabloları)
+                                </button>
+                                <button onclick="startQuickQuiz('hard')" 
+                                        class="w-full bg-red-500 hover:bg-red-600 text-white p-4 rounded-xl font-semibold transition duration-300">
+                                    😤 Zor (1-10 Tabloları)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 rounded-2xl p-6">
+                            <h3 class="text-xl font-bold mb-4 text-yellow-800">🏆 En İyi Skorların</h3>
+                            <div class="space-y-2" id="bestScores">
+                                ${getBestScores().map((score, index) => `
+                                    <div class="flex justify-between items-center bg-white rounded-lg p-3">
+                                        <span class="font-semibold">${['🥇', '🥈', '🥉'][index] || '🏅'} ${score.level}</span>
+                                        <span class="text-lg font-bold text-yellow-600">${score.score}%</span>
+                                    </div>
+                                `).join('') || '<div class="text-gray-500 text-center py-4">Henüz test çözmedin</div>'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Yardımcı Fonksiyonlar
+        function getUserTableProgress(tableNum) {
+            const userId = currentUser.username;
+            return multiplicationTableProgress[userId]?.[tableNum] || 0;
+        }
+
+        function getBestScores() {
+            const userId = currentUser.username;
+            const scores = JSON.parse(localStorage.getItem('quizBestScores') || '{}');
+            const userScores = scores[userId] || {};
+            
+            return Object.entries(userScores)
+                .map(([level, score]) => ({ level: level.charAt(0).toUpperCase() + level.slice(1), score }))
+                .sort((a, b) => b.score - a.score);
+        }
+
+        function generateQuickQuestion(tableNum) {
+            const multiplier = Math.floor(Math.random() * 10) + 1;
+            const correctAnswer = tableNum * multiplier;
+            const wrongAnswers = [];
+            
+            while (wrongAnswers.length < 4) {
+                const wrong = correctAnswer + (Math.floor(Math.random() * 10) - 5);
+                if (wrong > 0 && wrong !== correctAnswer && !wrongAnswers.includes(wrong)) {
+                    wrongAnswers.push(wrong);
+                }
+            }
+            
+            const allAnswers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+            
+            document.getElementById('quickQuestion').textContent = `${tableNum} × ${multiplier} = ?`;
+            document.getElementById('quickAnswers').innerHTML = allAnswers.map(answer => `
+                <button onclick="checkQuickAnswer(${answer}, ${correctAnswer}, ${tableNum})" 
+                        class="quick-answer w-12 h-12 rounded-lg border-2 border-gray-300 hover:border-orange-500 hover:bg-orange-100 transition duration-300">
+                    ${answer}
+                </button>
+            `).join('');
+        }
+
+        function checkQuickAnswer(selected, correct, tableNum) {
+            const buttons = document.querySelectorAll('.quick-answer');
+            buttons.forEach(btn => btn.disabled = true);
+            
+            if (selected === correct) {
+                event.target.classList.add('bg-green-200', 'border-green-500');
+                setTimeout(() => generateQuickQuestion(tableNum), 1000);
+            } else {
+                event.target.classList.add('bg-red-200', 'border-red-500');
+                buttons.forEach(btn => {
+                    if (parseInt(btn.textContent) === correct) {
+                        btn.classList.add('bg-green-200', 'border-green-500');
+                    }
+                });
+                setTimeout(() => generateQuickQuestion(tableNum), 1500);
+            }
+        }
+
+        function highlightMultiplication(num1, num2) {
+            // Tüm hücreleri sıfırla
+            document.querySelectorAll('.multiplication-cell').forEach(cell => {
+                cell.classList.remove('bg-yellow-300', 'scale-110');
+            });
+            
+            // Seçilen hücreyi vurgula
+            const cell = document.getElementById(`cell-${num1}-${num2}`);
+            if (cell) {
+                cell.classList.add('bg-yellow-300', 'scale-110');
+                
+                // Ses efekti (opsiyonel)
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(`${num1} çarpı ${num2} eşittir ${num1 * num2}`);
+                    utterance.lang = 'tr-TR';
+                    utterance.rate = 0.8;
+                    speechSynthesis.speak(utterance);
+                }
+            }
+        }
+
+        function speakMultiplication(num1, num2, result) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(`${num1} çarpı ${num2} eşittir ${result}`);
+                utterance.lang = 'tr-TR';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Hızlı Test Başlatma
+        function startQuickQuiz(level) {
+            const levelConfig = {
+                easy: { range: [1, 5], name: 'Kolay', questions: 10 },
+                medium: { range: [1, 7], name: 'Orta', questions: 15 },
+                hard: { range: [1, 10], name: 'Zor', questions: 20 }
+            };
+
+            const config = levelConfig[level];
+            let currentQuestion = 0;
+            let score = 0;
+            let timeLeft = 10;
+            let timer;
+
+            function showQuizQuestion() {
+                const num1 = Math.floor(Math.random() * (config.range[1] - config.range[0] + 1)) + config.range[0];
+                const num2 = Math.floor(Math.random() * (config.range[1] - config.range[0] + 1)) + config.range[0];
+                const correctAnswer = num1 * num2;
+                
+                const wrongAnswers = [];
+                while (wrongAnswers.length < 3) {
+                    const wrong = correctAnswer + (Math.floor(Math.random() * 20) - 10);
+                    if (wrong > 0 && wrong !== correctAnswer && !wrongAnswers.includes(wrong)) {
+                        wrongAnswers.push(wrong);
+                    }
+                }
+                
+                const allAnswers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+                timeLeft = 10;
+
+                document.getElementById('multiplicationTableContent').innerHTML = `
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">${config.name} Test</h2>
+                            <div class="text-sm text-gray-600">
+                                Soru ${currentQuestion + 1}/${config.questions} | Puan: ${score}
+                            </div>
+                        </div>
+
+                        <div class="text-center mb-8">
+                            <div class="bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                                <div class="text-2xl font-bold" id="timer">${timeLeft}</div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl p-8 mb-6">
+                                <div class="text-4xl font-bold mb-4">
+                                    ${num1} × ${num2} = ?
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                                ${allAnswers.map(answer => `
+                                    <button onclick="checkQuizAnswer(${answer}, ${correctAnswer}, '${level}')" 
+                                            class="quiz-answer bg-white border-2 border-gray-300 rounded-xl p-4 text-2xl font-bold hover:border-blue-500 hover:bg-blue-50 transition-all duration-300">
+                                        ${answer}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-100 rounded-xl p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm font-medium">İlerleme</span>
+                                <span class="text-sm font-bold">${Math.round((currentQuestion / config.questions) * 100)}%</span>
+                            </div>
+                            <div class="w-full bg-gray-300 rounded-full h-2">
+                                <div class="bg-blue-500 h-2 rounded-full transition-all duration-300" 
+                                     style="width: ${(currentQuestion / config.questions) * 100}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Timer başlat
+                timer = setInterval(() => {
+                    timeLeft--;
+                    const timerElement = document.getElementById('timer');
+                    if (timerElement) {
+                        timerElement.textContent = timeLeft;
+                        if (timeLeft <= 3) {
+                            timerElement.parentElement.classList.add('pulse-animation');
+                        }
+                    }
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        // Zaman doldu, yanlış cevap olarak işle
+                        checkQuizAnswer(-1, correctAnswer, level);
+                    }
+                }, 1000);
+            }
+
+            window.checkQuizAnswer = function(selectedAnswer, correctAnswer, level) {
+                clearInterval(timer);
+                const buttons = document.querySelectorAll('.quiz-answer');
+                buttons.forEach(btn => btn.disabled = true);
+                
+                if (selectedAnswer === correctAnswer) {
+                    score += 10 + timeLeft; // Hızlı cevap bonusu
+                    event.target?.classList.add('bg-green-200', 'border-green-500');
+                } else {
+                    score = Math.max(0, score - 5);
+                    event.target?.classList.add('bg-red-200', 'border-red-500');
+                    // Doğru cevabı göster
+                    buttons.forEach(btn => {
+                        if (parseInt(btn.textContent) === correctAnswer) {
+                            btn.classList.add('bg-green-200', 'border-green-500');
+                        }
+                    });
+                }
+                
+                setTimeout(() => {
+                    currentQuestion++;
+                    if (currentQuestion < config.questions) {
+                        showQuizQuestion();
+                    } else {
+                        showQuizResults(level, score, config.questions);
+                    }
+                }, 1500);
+            };
+
+            showQuizQuestion();
+        }
+
+        // Test Sonuçları
+        function showQuizResults(level, score, totalQuestions) {
+            const maxScore = totalQuestions * 20; // Max puan (10 + 10 bonus)
+            const percentage = Math.round((score / maxScore) * 100);
+            
+            // En iyi skoru kaydet
+            saveBestScore(level, percentage);
+            
+            let message, emoji, color;
+            if (percentage >= 90) {
+                message = "Muhteşem! Çarpım tablosunda gerçek bir ustasın!";
+                emoji = "🏆";
+                color = "from-yellow-400 to-yellow-600";
+            } else if (percentage >= 70) {
+                message = "Harika! Çok iyi bir performans sergileddin!";
+                emoji = "🌟";
+                color = "from-green-400 to-green-600";
+            } else if (percentage >= 50) {
+                message = "İyi! Biraz daha pratik yaparak daha da iyileşebilirsin!";
+                emoji = "👍";
+                color = "from-blue-400 to-blue-600";
+            } else {
+                message = "Daha fazla çalışman gerekiyor. Pes etme!";
+                emoji = "💪";
+                color = "from-red-400 to-red-600";
+            }
+
+            document.getElementById('multiplicationTableContent').innerHTML = `
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <div class="text-center mb-8">
+                        <div class="text-6xl mb-4">${emoji}</div>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-4">Test Tamamlandı!</h2>
+                        <div class="bg-gradient-to-r ${color} text-white rounded-2xl p-6 mb-6">
+                            <div class="text-4xl font-bold mb-2">${score} Puan</div>
+                            <div class="text-xl mb-2">%${percentage} Başarı</div>
+                            <div class="text-lg opacity-90">${message}</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button onclick="startQuickQuiz('${level}')" 
+                                class="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-xl font-semibold transition duration-300">
+                            🔄 Tekrar Dene
+                        </button>
+                        <button onclick="showTableQuiz()" 
+                                class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl font-semibold transition duration-300">
+                            📊 Test Menüsü
+                        </button>
+                        <button onclick="showMultiplicationTable()" 
+                                class="bg-purple-500 hover:bg-purple-600 text-white p-4 rounded-xl font-semibold transition duration-300">
+                            🏠 Ana Menü
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function saveBestScore(level, score) {
+            const userId = currentUser.username;
+            const scores = JSON.parse(localStorage.getItem('quizBestScores') || '{}');
+            
+            if (!scores[userId]) scores[userId] = {};
+            scores[userId][level] = Math.max(scores[userId][level] || 0, score);
+            
+            localStorage.setItem('quizBestScores', JSON.stringify(scores));
+        }
+
+        // Tablo Antrenmanı
+        function startTableDrill(tableNum) {
+            let currentQuestion = 0;
+            let correctAnswers = 0;
+            const totalQuestions = 10;
+            
+            function showDrillQuestion() {
+                const multiplier = Math.floor(Math.random() * 10) + 1;
+                const correctAnswer = tableNum * multiplier;
+                const wrongAnswers = [];
+                
+                // Yanlış cevaplar oluştur
+                while (wrongAnswers.length < 3) {
+                    const wrong = correctAnswer + (Math.floor(Math.random() * 10) - 5);
+                    if (wrong > 0 && wrong !== correctAnswer && !wrongAnswers.includes(wrong)) {
+                        wrongAnswers.push(wrong);
+                    }
+                }
+                
+                const allAnswers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+                
+                document.getElementById('multiplicationTableContent').innerHTML = `
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">${tableNum} Tablosu Antrenmanı</h2>
+                            <div class="text-sm text-gray-600">
+                                Soru ${currentQuestion + 1} / ${totalQuestions} | Doğru: ${correctAnswers}
+                            </div>
+                        </div>
+
+                        <div class="text-center mb-8">
+                            <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl p-8 mb-6">
+                                <div class="text-4xl font-bold mb-4">
+                                    ${tableNum} × ${multiplier} = ?
+                                </div>
+                                <div class="text-lg opacity-90">
+                                    ${tableNum} çarpı ${multiplier} kaç eder?
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                                ${allAnswers.map(answer => `
+                                    <button onclick="checkDrillAnswer(${answer}, ${correctAnswer}, ${tableNum})" 
+                                            class="drill-answer bg-white border-2 border-gray-300 rounded-xl p-4 text-2xl font-bold hover:border-blue-500 hover:bg-blue-50 transition-all duration-300">
+                                        ${answer}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-100 rounded-xl p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm font-medium">İlerleme</span>
+                                <span class="text-sm font-bold">${Math.round((currentQuestion / totalQuestions) * 100)}%</span>
+                            </div>
+                            <div class="w-full bg-gray-300 rounded-full h-2">
+                                <div class="bg-blue-500 h-2 rounded-full transition-all duration-300" 
+                                     style="width: ${(currentQuestion / totalQuestions) * 100}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            window.checkDrillAnswer = function(selectedAnswer, correctAnswer, tableNum) {
+                const buttons = document.querySelectorAll('.drill-answer');
+                buttons.forEach(btn => btn.disabled = true);
+                
+                if (selectedAnswer === correctAnswer) {
+                    correctAnswers++;
+                    event.target.classList.add('bg-green-200', 'border-green-500');
+                    setTimeout(() => {
+                        currentQuestion++;
+                        if (currentQuestion < totalQuestions) {
+                            showDrillQuestion();
+                        } else {
+                            showDrillResults(tableNum, correctAnswers, totalQuestions);
+                        }
+                    }, 1500);
+                } else {
+                    event.target.classList.add('bg-red-200', 'border-red-500');
+                    // Doğru cevabı göster
+                    buttons.forEach(btn => {
+                        if (parseInt(btn.textContent) === correctAnswer) {
+                            btn.classList.add('bg-green-200', 'border-green-500');
+                        }
+                    });
+                    setTimeout(() => {
+                        currentQuestion++;
+                        if (currentQuestion < totalQuestions) {
+                            showDrillQuestion();
+                        } else {
+                            showDrillResults(tableNum, correctAnswers, totalQuestions);
+                        }
+                    }, 2000);
+                }
+            };
+            
+            showDrillQuestion();
+        }
+
+        // Antrenman Sonuçları
+        function showDrillResults(tableNum, correctAnswers, totalQuestions) {
+            const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+            const userId = currentUser.username;
+            
+            // İlerlemeyi kaydet
+            if (!multiplicationTableProgress[userId]) {
+                multiplicationTableProgress[userId] = {};
+            }
+            multiplicationTableProgress[userId][tableNum] = Math.max(
+                multiplicationTableProgress[userId][tableNum] || 0, 
+                percentage
+            );
+            localStorage.setItem('multiplicationTableProgress', JSON.stringify(multiplicationTableProgress));
+            
+            let message, emoji, color;
+            if (percentage >= 90) {
+                message = "Mükemmel! Bu tabloyu çok iyi öğrenmişsin!";
+                emoji = "🏆";
+                color = "from-yellow-400 to-yellow-600";
+            } else if (percentage >= 70) {
+                message = "Harika! Biraz daha pratik yaparak mükemmel olabilirsin!";
+                emoji = "🌟";
+                color = "from-green-400 to-green-600";
+            } else if (percentage >= 50) {
+                message = "İyi gidiyorsun! Biraz daha çalışman gerekiyor.";
+                emoji = "👍";
+                color = "from-blue-400 to-blue-600";
+            } else {
+                message = "Daha fazla pratik yapmalısın. Pes etme!";
+                emoji = "💪";
+                color = "from-red-400 to-red-600";
+            }
+
+            document.getElementById('multiplicationTableContent').innerHTML = `
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <div class="text-center mb-8">
+                        <div class="text-6xl mb-4">${emoji}</div>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-4">Antrenman Tamamlandı!</h2>
+                        <div class="bg-gradient-to-r ${color} text-white rounded-2xl p-6 mb-6">
+                            <div class="text-4xl font-bold mb-2">${correctAnswers}/${totalQuestions}</div>
+                            <div class="text-xl mb-2">%${percentage} Başarı</div>
+                            <div class="text-lg opacity-90">${message}</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button onclick="startTableDrill(${tableNum})" 
+                                class="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-xl font-semibold transition duration-300">
+                            🔄 Tekrar Dene
+                        </button>
+                        <button onclick="showSingleTable(${tableNum})" 
+                                class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl font-semibold transition duration-300">
+                            📚 Tabloyu İncele
+                        </button>
+                        <button onclick="showMultiplicationTable()" 
+                                class="bg-purple-500 hover:bg-purple-600 text-white p-4 rounded-xl font-semibold transition duration-300">
+                            🏠 Ana Menü
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Placeholder fonksiyonlar (gelecekte eklenecek)
+        function showTablePractice() {
+            alert('🎯 Tablo Seç özelliği yakında eklenecek!');
+        }
+
+        // Ödev yükleme fonksiyonları
+        function showHomeworkUpload() {
+            const subjects = gradeSubjects[currentUser.grade] || gradeSubjects[2];
+            document.getElementById('homeworkSubject').innerHTML = 
+                '<option value="">Ders Seçin</option>' +
+                subjects.map(subject => `<option value="${subject.name}">${subject.name}</option>`).join('');
+            
+            document.getElementById('homeworkModal').classList.remove('hidden');
+            document.getElementById('homeworkModal').classList.add('flex');
+        }
+
+        function closeHomeworkModal() {
+            document.getElementById('homeworkModal').classList.add('hidden');
+            document.getElementById('homeworkModal').classList.remove('flex');
+            
+            // Formu temizle
+            document.getElementById('homeworkSubject').value = '';
+            document.getElementById('homeworkTitle').value = '';
+            document.getElementById('homeworkDescription').value = '';
+            document.getElementById('homeworkFile').value = '';
+            document.getElementById('selectedFile').textContent = '';
+        }
+
+        function uploadHomework() {
+            const subject = document.getElementById('homeworkSubject').value;
+            const title = document.getElementById('homeworkTitle').value.trim();
+            const description = document.getElementById('homeworkDescription').value.trim();
+            const file = document.getElementById('homeworkFile').files[0];
+
+            if (!subject || !title || !description) {
+                alert('Lütfen tüm alanları doldurun!');
+                return;
+            }
+
+            const homework = {
+                id: Date.now(),
+                userId: currentUser.username,
+                subject,
+                title,
+                description,
+                fileName: file ? file.name : null,
+                uploadDate: new Date().toISOString(),
+                status: 'pending'
+            };
+
+            homeworks.push(homework);
+            localStorage.setItem('homeworks', JSON.stringify(homeworks));
+            
+            alert('Ödev başarıyla yüklendi! 📤');
+            closeHomeworkModal();
+            loadHomework();
+        }
+
+        // Ödev yükleme
+        function loadHomework() {
+            const userHomeworks = homeworks.filter(hw => hw.userId === currentUser.username);
+            const pending = userHomeworks.filter(hw => hw.status === 'pending');
+            const completed = userHomeworks.filter(hw => hw.status === 'completed');
+
+            document.getElementById('pendingHomeworkList').innerHTML = pending.length ? 
+                pending.map(hw => `
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-semibold text-yellow-800">${hw.title}</h4>
+                                <p class="text-sm text-yellow-700">${hw.subject}</p>
+                                <p class="text-xs text-yellow-600 mt-1">${new Date(hw.uploadDate).toLocaleDateString('tr-TR')}</p>
+                            </div>
+                            <span class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded text-xs">Bekliyor</span>
+                        </div>
+                    </div>
+                `).join('') : '<p class="text-gray-500 text-center py-4">Bekleyen ödev yok</p>';
+
+            document.getElementById('completedHomeworkList').innerHTML = completed.length ?
+                completed.map(hw => `
+                    <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-semibold text-green-800">${hw.title}</h4>
+                                <p class="text-sm text-green-700">${hw.subject}</p>
+                                <p class="text-xs text-green-600 mt-1">${new Date(hw.uploadDate).toLocaleDateString('tr-TR')}</p>
+                            </div>
+                            <span class="bg-green-200 text-green-800 px-2 py-1 rounded text-xs">Tamamlandı</span>
+                        </div>
+                    </div>
+                `).join('') : '<p class="text-gray-500 text-center py-4">Tamamlanan ödev yok</p>';
+        }
+
+        // İstatistikleri güncelleme
+        function updateStats() {
+            const userId = currentUser.username;
+            const progress = userProgress[userId] || { completed: 0, score: 0 };
+            const userHomeworks = homeworks.filter(hw => hw.userId === userId);
+            const pendingCount = userHomeworks.filter(hw => hw.status === 'pending').length;
+
+            document.getElementById('completedLessons').textContent = progress.completed;
+            document.getElementById('totalScore').textContent = progress.score;
+            document.getElementById('pendingHomework').textContent = pendingCount;
+            
+            // Profil istatistikleri
+            document.getElementById('profileCompletedLessons').textContent = progress.completed;
+            document.getElementById('profileTotalScore').textContent = progress.score;
+            document.getElementById('profileAverage').textContent = progress.completed > 0 ? 
+                Math.round(progress.score / progress.completed) : 0;
+        }
+
+        // Dosya seçimi gösterimi
+        document.getElementById('homeworkFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const selectedFileDiv = document.getElementById('selectedFile');
+            
+            if (file) {
+                selectedFileDiv.textContent = `✅ ${file.name} seçildi`;
+            } else {
+                selectedFileDiv.textContent = '';
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96975c9150ddb138',t:'MTc1NDI0MDMyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
