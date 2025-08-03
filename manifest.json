@@ -12,58 +12,44 @@
   "categories": ["education", "productivity"],
   "icons": [
     {
-      "src": "https://via.placeholder.com/72x72/667eea/ffffff?text=📚",
+      "src": "./logo.png",
       "sizes": "72x72",
       "type": "image/png"
     },
     {
-      "src": "https://via.placeholder.com/96x96/667eea/ffffff?text=📚",
+      "src": "./logo.png",
       "sizes": "96x96",
       "type": "image/png"
     },
     {
-      "src": "https://via.placeholder.com/128x128/667eea/ffffff?text=📚",
+      "src": "./logo.png",
       "sizes": "128x128",
       "type": "image/png"
     },
     {
-      "src": "https://via.placeholder.com/144x144/667eea/ffffff?text=📚",
+      "src": "./logo.png",
       "sizes": "144x144",
       "type": "image/png"
     },
     {
-      "src": "https://via.placeholder.com/152x152/667eea/ffffff?text=📚",
+      "src": "./logo.png",
       "sizes": "152x152",
       "type": "image/png"
     },
     {
-      "src": "https://via.placeholder.com/192x192/667eea/ffffff?text=📚",
+      "src": "./logo.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://via.placeholder.com/384x384/667eea/ffffff?text=📚",
+      "src": "./logo.png",
       "sizes": "384x384",
       "type": "image/png"
     },
     {
-      "src": "https://via.placeholder.com/512x512/667eea/ffffff?text=📚",
+      "src": "./logo.png",
       "sizes": "512x512",
       "type": "image/png"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "https://via.placeholder.com/320x568/667eea/ffffff?text=Bekir+Hoca+Mobile",
-      "sizes": "320x568",
-      "type": "image/png",
-      "form_factor": "narrow"
-    },
-    {
-      "src": "https://via.placeholder.com/1024x768/667eea/ffffff?text=Bekir+Hoca+Desktop",
-      "sizes": "1024x768",
-      "type": "image/png",
-      "form_factor": "wide"
     }
   ],
   "shortcuts": [
@@ -74,7 +60,7 @@
       "url": "/?section=lessons",
       "icons": [
         {
-          "src": "https://via.placeholder.com/96x96/667eea/ffffff?text=📖",
+          "src": "./logo.png",
           "sizes": "96x96",
           "type": "image/png"
         }
@@ -87,7 +73,7 @@
       "url": "/?section=homework",
       "icons": [
         {
-          "src": "https://via.placeholder.com/96x96/667eea/ffffff?text=📝",
+          "src": "./logo.png",
           "sizes": "96x96",
           "type": "image/png"
         }
